@@ -8,23 +8,16 @@ pipeline {
                     url: 'https://github.com/samanmasoumii/jenkins-test.git'
             }
         }
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Building the application...'
-                sh 'chmod +x hello.sh'
-                sh './hello.sh'
+                echo 'Building Docker image...'
+                sh 'docker build -t my-hello-app .'
             }
         }
-        stage('Test') {
+        stage('Run Docker Container') {
             steps {
-                echo 'Running tests...'
-                sh 'echo "All tests passed!"'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying to production...'
-                sh 'echo "Deployment complete!"'
+                echo 'Running Docker container...'
+                sh 'docker run --rm my-hello-app'
             }
         }
     }
