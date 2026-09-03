@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'saman.masoumi1372@gmail.com/my-hello-app'  // نام کاربری خود را جایگزین کنید
+        DOCKER_IMAGE = 'samanmasoumi/my-hello-app'  // نام کاربری خود را جایگزین کنید
         DOCKER_TAG = 'latest'
     }
 
