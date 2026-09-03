@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'samanmasoumi/my-hello-app'  // نام کاربری خود را جایگزین کنید
-        DOCKER_TAG = 'latest'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -16,20 +11,16 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                sh 'docker build -t samanmasoumi/my-hello-app:latest .'
             }
         }
         stage('Push to Docker Hub') {
             steps {
                 echo 'Pushing image to Docker Hub...'
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-hub-credentials',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
+                withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
                     sh '''
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        echo $DOCKER_TOKEN | docker login -u samanmasoumi --password-stdin
+                        docker push samanmasoumi/my-hello-app:latest
                     '''
                 }
             }
@@ -37,7 +28,7 @@ pipeline {
         stage('Run Container') {
             steps {
                 echo 'Running container from Docker Hub...'
-                sh "docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                sh 'docker run --rm samanmasoumi/my-hello-app:latest'
             }
         }
     }
