@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_USER = 'samanmasoumi'
-        DOCKER_IMAGE = 'samanmasoumi/my-hello-app'
+        DOCKER_IMAGE = 'my-hello-app'
         DOCKER_TAG = 'latest'
     }
 
@@ -24,9 +24,13 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 echo 'Pushing image to Docker Hub...'
-                withCredentials([string(credentialsId: 'docker-hub-credentials', variable: 'DOCKER_TOKEN')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
                     sh '''
-                        echo $DOCKER_TOKEN | docker login -u samanmasoumi --password-stdin
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
                         docker push ${DOCKER_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}
                     '''
                 }
