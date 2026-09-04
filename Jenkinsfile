@@ -43,15 +43,15 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Deploying to environment: ${params.DEPLOY_ENV}"
-                sh '''
-                    if [ "${params.DEPLOY_ENV}" = "production" ]; then
-                        echo "🚀 Deploying to PRODUCTION server!"
-                    elif [ "${params.DEPLOY_ENV}" = "staging" ]; then
-                        echo "🧪 Deploying to STAGING server!"
-                    else
-                        echo "💻 Deploying to DEVELOPMENT server!"
-                    fi
-                '''
+                script {
+                    if (params.DEPLOY_ENV == 'production') {
+                        echo '🚀 Deploying to PRODUCTION server!'
+                    } else if (params.DEPLOY_ENV == 'staging') {
+                        echo '🧪 Deploying to STAGING server!'
+                    } else {
+                        echo '💻 Deploying to DEVELOPMENT server!'
+                    }
+                }
             }
         }
         stage('Test Run Container') {
